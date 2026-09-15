@@ -27,3 +27,36 @@ extension Calendar {
         return interval.start..<interval.end
     }
 }
+
+extension Calendar {
+
+    public init(identifier: Identifier, timeZone: TimeZone) {
+        self.init(identifier: identifier)
+        self.timeZone = timeZone
+    }
+}
+
+extension Calendar {
+
+    /// The first instant of the hour that follows the moment: 09:20 gives 10:00, and so does 09:00.
+    public static func nextHour(after date: Date, in calendar: Calendar) -> Date? {
+        calendar.nextDate(after: date, matching: DateComponents(minute: 0), matchingPolicy: .nextTime)
+    }
+
+    public func nextHour(after date: Date) -> Date? {
+        Self.nextHour(after: date, in: self)
+    }
+}
+
+extension Calendar {
+
+    /// The moment on `day` at the hour and minute `time` has; seconds are dropped.
+    public static func date(day: Date, time: Date, in calendar: Calendar) -> Date? {
+        let clock = calendar.dateComponents([.hour, .minute], from: time)
+        return calendar.date(bySettingHour: clock.hour ?? 0, minute: clock.minute ?? 0, second: 0, of: day)
+    }
+
+    public func date(day: Date, time: Date) -> Date? {
+        Self.date(day: day, time: time, in: self)
+    }
+}
