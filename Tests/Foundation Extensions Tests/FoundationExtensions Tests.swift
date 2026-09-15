@@ -7,6 +7,31 @@ import Testing
 struct Test {
 
     @Suite
+    struct `Array Move` {
+
+        @Test
+        func `Moving one element forward lands it before the destination`() {
+            var array = ["a", "b", "c", "d"]
+            array.move(offsets: [0], to: 3)
+            #expect(array == ["b", "c", "a", "d"])
+        }
+
+        @Test
+        func `Moving several elements keeps their order`() {
+            var array = [1, 2, 3, 4, 5]
+            array.move(offsets: [1, 3], to: 0)
+            #expect(array == [2, 4, 1, 3, 5])
+        }
+
+        @Test
+        func `Moving to the end appends`() {
+            var array = [1, 2, 3]
+            array.move(offsets: [0], to: 3)
+            #expect(array == [2, 3, 1])
+        }
+    }
+
+    @Suite
     struct `Safe Array` {
 
         @Test
