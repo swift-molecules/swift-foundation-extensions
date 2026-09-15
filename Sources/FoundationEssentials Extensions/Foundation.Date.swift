@@ -267,49 +267,35 @@ extension Date {
         calendar.startOfDay(for: self)
     }
 
-    public func endOfDay(in calendar: Calendar) -> Date {
-        let startOfNextDay = calendar.date(
-            byAdding: DateComponents(day: 1),
-            to: calendar.startOfDay(for: self)
-        )!
-        return calendar.date(byAdding: DateComponents(second: -1), to: startOfNextDay)!
+    /// The first instant of the following day: the exclusive end of this one. `Date` is
+    /// continuous, so a period has no last instant; a bound one second before midnight
+    /// would leave every sub-second stamp in that final second belonging to no day.
+    public func endOfDay(in calendar: Calendar) -> Date? {
+        calendar.day(containing: self)?.upperBound
     }
 
-    public func startOfWeek(in calendar: Calendar) -> Date {
-        let components = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)
-        return calendar.date(from: components)!
+    public func startOfWeek(in calendar: Calendar) -> Date? {
+        calendar.week(containing: self)?.lowerBound
     }
 
-    public func endOfWeek(in calendar: Calendar) -> Date {
-        let startOfNextWeek = calendar.date(
-            byAdding: DateComponents(weekOfYear: 1),
-            to: self.startOfWeek(in: calendar)
-        )!
-        return calendar.date(byAdding: DateComponents(second: -1), to: startOfNextWeek)!
+    public func endOfWeek(in calendar: Calendar) -> Date? {
+        calendar.week(containing: self)?.upperBound
     }
 
-    public func startOfMonth(in calendar: Calendar) -> Date {
-        calendar.date(from: calendar.dateComponents([.year, .month], from: self))!
+    public func startOfMonth(in calendar: Calendar) -> Date? {
+        calendar.month(containing: self)?.lowerBound
     }
 
-    public func endOfMonth(in calendar: Calendar) -> Date {
-        let startOfNextMonth = calendar.date(
-            byAdding: DateComponents(month: 1),
-            to: self.startOfMonth(in: calendar)
-        )!
-        return calendar.date(byAdding: DateComponents(second: -1), to: startOfNextMonth)!
+    public func endOfMonth(in calendar: Calendar) -> Date? {
+        calendar.month(containing: self)?.upperBound
     }
 
-    public func startOfYear(in calendar: Calendar) -> Date {
-        calendar.date(from: calendar.dateComponents([.year], from: self))!
+    public func startOfYear(in calendar: Calendar) -> Date? {
+        calendar.year(containing: self)?.lowerBound
     }
 
-    public func endOfYear(in calendar: Calendar) -> Date {
-        let startOfNextYear = calendar.date(
-            byAdding: DateComponents(year: 1),
-            to: self.startOfYear(in: calendar)
-        )!
-        return calendar.date(byAdding: DateComponents(second: -1), to: startOfNextYear)!
+    public func endOfYear(in calendar: Calendar) -> Date? {
+        calendar.year(containing: self)?.upperBound
     }
 }
 

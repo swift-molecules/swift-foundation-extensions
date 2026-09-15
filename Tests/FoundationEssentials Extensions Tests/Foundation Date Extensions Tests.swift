@@ -148,33 +148,44 @@ struct `Foundation Date Extensions` {
     struct `Period Boundaries` {
 
         @Test
-        func `Start and end of day bracket the day`() throws {
+        func `End of day is the next midnight, exclusive`() throws {
             let noon = try #require(Date(year: 2025, month: 7, day: 26, hour: 12, in: gregorian))
 
             let start = noon.startOfDay(in: gregorian)
-            #expect(start.hour(in: gregorian) == 0)
-            #expect(start.minute(in: gregorian) == 0)
-            #expect(start.second(in: gregorian) == 0)
+            #expect(start == Date(year: 2025, month: 7, day: 26, in: gregorian))
 
-            let end = noon.endOfDay(in: gregorian)
-            #expect(end.hour(in: gregorian) == 23)
-            #expect(end.minute(in: gregorian) == 59)
-            #expect(end.second(in: gregorian) == 59)
-            #expect(end.day(in: gregorian) == 26)
+            let end = try #require(noon.endOfDay(in: gregorian))
+            #expect(end == Date(year: 2025, month: 7, day: 27, in: gregorian))
+
+            let day = try #require(gregorian.day(containing: noon))
+            #expect(day == start..<end)
+            #expect(day.contains(end.addingTimeInterval(-0.5)))
+            #expect(!day.contains(end))
         }
 
         @Test
-        func `Start and end of month bracket the month`() throws {
+        func `Day is bounded by the calendar it is asked in`() throws {
+            var tokyo = gregorian
+            tokyo.timeZone = TimeZone(identifier: "Asia/Tokyo")!
+            // 2009-02-13 23:31:30 UTC is already the 14th in Tokyo.
+            let moment = Date(timeIntervalSince1970: 1_234_567_890)
+
+            let day = try #require(gregorian.day(containing: moment))
+            #expect(day.lowerBound == Date(year: 2009, month: 2, day: 13, in: gregorian))
+            #expect(day.contains(moment))
+
+            let ahead = try #require(tokyo.day(containing: moment))
+            #expect(ahead.lowerBound == Date(year: 2009, month: 2, day: 14, in: tokyo))
+            #expect(ahead.contains(moment))
+        }
+
+        @Test
+        func `End of month is the first instant of the next month`() throws {
             let date = try #require(Date(year: 2025, month: 7, day: 26, in: gregorian))
 
-            let start = date.startOfMonth(in: gregorian)
-            #expect(start.day(in: gregorian) == 1)
-            #expect(start.month(in: gregorian) == 7)
-
-            let end = date.endOfMonth(in: gregorian)
-            #expect(end.day(in: gregorian) == 31)
-            #expect(end.month(in: gregorian) == 7)
-            #expect(end.hour(in: gregorian) == 23)
+            #expect(date.startOfMonth(in: gregorian) == Date(year: 2025, month: 7, day: 1, in: gregorian))
+            #expect(date.endOfMonth(in: gregorian) == Date(year: 2025, month: 8, day: 1, in: gregorian))
+            #expect(gregorian.month(containing: date)?.contains(date) == true)
         }
 
         @Test
@@ -187,29 +198,26 @@ struct `Foundation Date Extensions` {
         }
 
         @Test
-        func `Start and end of year bracket the year`() throws {
+        func `End of year is the first instant of the next year`() throws {
             let date = try #require(Date(year: 2025, month: 7, day: 26, in: gregorian))
 
-            let start = date.startOfYear(in: gregorian)
-            #expect(start.month(in: gregorian) == 1)
-            #expect(start.day(in: gregorian) == 1)
-
-            let end = date.endOfYear(in: gregorian)
-            #expect(end.month(in: gregorian) == 12)
-            #expect(end.day(in: gregorian) == 31)
+            #expect(date.startOfYear(in: gregorian) == Date(year: 2025, month: 1, day: 1, in: gregorian))
+            #expect(date.endOfYear(in: gregorian) == Date(year: 2026, month: 1, day: 1, in: gregorian))
+            #expect(gregorian.year(containing: date)?.contains(date) == true)
         }
 
         @Test
-        func `Start of week is the configured first weekday`() throws {
+        func `Week starts on the configured first weekday and ends a week later`() throws {
             let saturday = try #require(Date(year: 2025, month: 7, day: 26, in: gregorian))
 
-            let start = saturday.startOfWeek(in: gregorian)
+            let start = try #require(saturday.startOfWeek(in: gregorian))
             #expect(start.weekday(in: gregorian) == gregorian.firstWeekday)
             #expect(start <= saturday)
 
-            let end = saturday.endOfWeek(in: gregorian)
+            let end = try #require(saturday.endOfWeek(in: gregorian))
             #expect(end > saturday)
-            #expect(end.daysBetween(start, in: gregorian) == -6)
+            #expect(end.daysBetween(start, in: gregorian) == -7)
+            #expect(gregorian.week(containing: saturday) == start..<end)
         }
     }
 
