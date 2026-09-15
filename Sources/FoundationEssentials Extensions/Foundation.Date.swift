@@ -1,15 +1,5 @@
 import Foundation
 
-extension DateComponents {
-
-    public static let allComponents: [Calendar.Component] = [
-        .nanosecond, .second, .minute, .hour,
-        .day, .month, .year, .yearForWeekOfYear,
-        .weekOfYear, .weekday, .quarter, .weekdayOrdinal,
-        .weekOfMonth,
-    ]
-}
-
 extension Date {
 
     public init?(
@@ -405,8 +395,7 @@ extension Date {
         return "now"
     }
 
-    public func relativeFormatted(in calendar: Calendar) -> String {
-        let now = Date()
+    public func relativeFormatted(in calendar: Calendar, now: Date = Date()) -> String {
 
         if self.isToday(in: calendar) {
             if abs(self.timeIntervalSince(now)) < 60 {

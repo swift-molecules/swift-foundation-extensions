@@ -2,9 +2,17 @@ import Foundation
 
 extension DateComponents {
 
-    public func adding(_ other: DateComponents, in calendar: Calendar) -> DateComponents {
-        let now = Date()
+    public static let allComponents: [Calendar.Component] = [
+        .nanosecond, .second, .minute, .hour,
+        .day, .month, .year, .yearForWeekOfYear,
+        .weekOfYear, .weekday, .quarter, .weekdayOrdinal,
+        .weekOfMonth,
+    ]
+}
 
+extension DateComponents {
+
+    public func adding(_ other: DateComponents, in calendar: Calendar, now: Date = Date()) -> DateComponents {
         guard let intermediateDate = calendar.date(byAdding: self, to: now),
             let finalDate = calendar.date(byAdding: other, to: intermediateDate)
         else {
@@ -14,8 +22,7 @@ extension DateComponents {
         return calendar.dateComponents(Set(DateComponents.allComponents), from: now, to: finalDate)
     }
 
-    public func subtracting(_ other: DateComponents, in calendar: Calendar) -> DateComponents {
-        let now = Date()
+    public func subtracting(_ other: DateComponents, in calendar: Calendar, now: Date = Date()) -> DateComponents {
         guard let date1 = calendar.date(byAdding: self, to: now),
             let date2 = calendar.date(byAdding: other.negated(), to: date1)
         else {
@@ -24,8 +31,7 @@ extension DateComponents {
         return calendar.dateComponents(Set(DateComponents.allComponents), from: now, to: date2)
     }
 
-    public func multiplied(by factor: Int, in calendar: Calendar) -> DateComponents {
-        let now = Date()
+    public func multiplied(by factor: Int, in calendar: Calendar, now: Date = Date()) -> DateComponents {
         var result = DateComponents()
 
         for component in DateComponents.allComponents {
