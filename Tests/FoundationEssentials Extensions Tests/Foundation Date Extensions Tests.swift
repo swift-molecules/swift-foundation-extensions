@@ -192,9 +192,9 @@ struct `Foundation Date Extensions` {
         func `First and last day of month`() throws {
             let date = try #require(Date(year: 2025, month: 2, day: 10, in: gregorian))
 
-            #expect(date.firstDayOfMonth(in: gregorian).day(in: gregorian) == 1)
+            #expect(date.firstDayOfMonth(in: gregorian)?.day(in: gregorian) == 1)
 
-            #expect(date.lastDayOfMonth(in: gregorian).day(in: gregorian) == 28)
+            #expect(date.lastDayOfMonth(in: gregorian)?.day(in: gregorian) == 28)
         }
 
         @Test
@@ -270,7 +270,7 @@ struct `Foundation Date Extensions` {
         @Test
         func `A weekend date rolls forward to the next workday`() throws {
             let saturday = try #require(Date(year: 2025, month: 7, day: 26, in: gregorian))
-            let workday = saturday.ifWeekendThenNextWorkday(in: gregorian)
+            let workday = try #require(saturday.ifWeekendThenNextWorkday(in: gregorian))
 
             #expect(workday.day(in: gregorian) == 28)
             #expect(!workday.isWeekend(in: gregorian))
@@ -279,7 +279,7 @@ struct `Foundation Date Extensions` {
         @Test
         func `A weekend date rolls back to the previous workday`() throws {
             let saturday = try #require(Date(year: 2025, month: 7, day: 26, in: gregorian))
-            let workday = saturday.ifWeekendThenPreviousWorkday(in: gregorian)
+            let workday = try #require(saturday.ifWeekendThenPreviousWorkday(in: gregorian))
 
             #expect(workday.day(in: gregorian) == 25)
             #expect(!workday.isWeekend(in: gregorian))
@@ -306,7 +306,7 @@ struct `Foundation Date Extensions` {
         @Test
         func `Business days skip the weekend`() throws {
             let friday = try #require(Date(year: 2025, month: 7, day: 25, in: gregorian))
-            let nextBusinessDay = friday.addingBusinessDays(1, in: gregorian)
+            let nextBusinessDay = try #require(friday.addingBusinessDays(1, in: gregorian))
 
             #expect(nextBusinessDay.day(in: gregorian) == 28)
         }
@@ -314,7 +314,7 @@ struct `Foundation Date Extensions` {
         @Test
         func `Negative business days walk backwards`() throws {
             let monday = try #require(Date(year: 2025, month: 7, day: 28, in: gregorian))
-            let previousBusinessDay = monday.addingBusinessDays(-1, in: gregorian)
+            let previousBusinessDay = try #require(monday.addingBusinessDays(-1, in: gregorian))
 
             #expect(previousBusinessDay.day(in: gregorian) == 25)
         }

@@ -171,32 +171,22 @@ extension Date {
         calendar.isDateInWeekend(self)
     }
 
-    public func nextWeekday(in calendar: Calendar) -> Date {
-        var nextDate = self
-        repeat {
-            nextDate = calendar.date(byAdding: .day, value: 1, to: nextDate)!
-        } while calendar.isDateInWeekend(nextDate)
-        return nextDate
+    public func nextWeekday(in calendar: Calendar) -> Date? {
+        guard let next = calendar.date(byAdding: .day, value: 1, to: self) else { return nil }
+        return calendar.isDateInWeekend(next) ? next.nextWeekday(in: calendar) : next
     }
 
-    public func ifWeekendThenNextWorkday(in calendar: Calendar) -> Date {
-        var currentDate = self
-
-        while calendar.isDateInWeekend(currentDate) {
-            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
-        }
-
-        return currentDate
+    public func ifWeekendThenNextWorkday(in calendar: Calendar) -> Date? {
+        Self.skippingWeekend(from: self, by: 1, in: calendar)
     }
 
-    public func ifWeekendThenPreviousWorkday(in calendar: Calendar) -> Date {
-        var currentDate = self
+    public func ifWeekendThenPreviousWorkday(in calendar: Calendar) -> Date? {
+        Self.skippingWeekend(from: self, by: -1, in: calendar)
+    }
 
-        while calendar.isDateInWeekend(currentDate) {
-            currentDate = calendar.date(byAdding: .day, value: -1, to: currentDate)!
-        }
-
-        return currentDate
+    private static func skippingWeekend(from date: Date, by step: Int, in calendar: Calendar) -> Date? {
+        guard calendar.isDateInWeekend(date) else { return date }
+        return calendar.date(byAdding: .day, value: step, to: date).flatMap { skippingWeekend(from: $0, by: step, in: calendar) }
     }
 }
 
@@ -215,52 +205,35 @@ extension Date {
     public func previous(_ weekday: Int, in calendar: Calendar) -> Date? {
         guard (1...7).contains(weekday) else { return nil }
 
-        let dayBefore = calendar.date(byAdding: .day, value: -1, to: self)!
-
-        var searchDate = dayBefore
-        while calendar.component(.weekday, from: searchDate) != weekday {
-            searchDate = calendar.date(byAdding: .day, value: -1, to: searchDate)!
+        return calendar.date(byAdding: .day, value: -1, to: self).flatMap {
+            calendar.component(.weekday, from: $0) == weekday ? $0 : $0.previous(weekday, in: calendar)
         }
-
-        return searchDate
     }
 }
 
 extension Date {
 
-    public func daysBetween(_ date: Date, in calendar: Calendar) -> Int {
-        let date1 = calendar.startOfDay(for: self)
-        let date2 = calendar.startOfDay(for: date)
-        return calendar.dateComponents([.day], from: date1, to: date2).day!
+    public func daysBetween(_ date: Date, in calendar: Calendar) -> Int? {
+        calendar.dateComponents([.day], from: calendar.startOfDay(for: self), to: calendar.startOfDay(for: date)).day
     }
 
-    public func addingBusinessDays(_ businessDays: Int, in calendar: Calendar) -> Date {
-        var date = self
-        var daysRemaining = abs(businessDays)
-        let direction: Int = businessDays < 0 ? -1 : 1
-
-        while daysRemaining > 0 {
-            date = calendar.date(byAdding: .day, value: direction, to: date)!
-            if !calendar.isDateInWeekend(date) {
-                daysRemaining -= 1
-            }
+    public func addingBusinessDays(_ businessDays: Int, in calendar: Calendar) -> Date? {
+        guard businessDays != 0 else { return self }
+        let step = businessDays.signum()
+        return calendar.date(byAdding: .day, value: step, to: self).flatMap { next in
+            next.addingBusinessDays(businessDays - (calendar.isDateInWeekend(next) ? 0 : step), in: calendar)
         }
-
-        return date
     }
 }
 
 extension Date {
 
-    public func firstDayOfMonth(in calendar: Calendar) -> Date {
-        calendar.date(from: calendar.dateComponents([.year, .month], from: self))!
+    public func firstDayOfMonth(in calendar: Calendar) -> Date? {
+        calendar.date(from: calendar.dateComponents([.year, .month], from: self))
     }
 
-    public func lastDayOfMonth(in calendar: Calendar) -> Date {
-        calendar.date(
-            byAdding: DateComponents(month: 1, day: -1),
-            to: self.firstDayOfMonth(in: calendar)
-        )!
+    public func lastDayOfMonth(in calendar: Calendar) -> Date? {
+        firstDayOfMonth(in: calendar).flatMap { calendar.date(byAdding: DateComponents(month: 1, day: -1), to: $0) }
     }
 
     public func startOfDay(in calendar: Calendar) -> Date {
@@ -301,8 +274,8 @@ extension Date {
 
 extension Date {
 
-    public func age(at referenceDate: Date = Date(), in calendar: Calendar) -> Int {
-        calendar.dateComponents([.year], from: self, to: referenceDate).year!
+    public func age(at referenceDate: Date = Date(), in calendar: Calendar) -> Int? {
+        calendar.dateComponents([.year], from: self, to: referenceDate).year
     }
 
     public func timeAgoSince(_ date: Date = Date(), in calendar: Calendar) -> String {
