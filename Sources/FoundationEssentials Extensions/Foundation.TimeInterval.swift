@@ -1,4 +1,4 @@
-import Foundation
+public import Foundation
 
 extension Foundation.TimeInterval {
 
@@ -28,15 +28,15 @@ extension Foundation.TimeInterval {
 
     public var formattedDuration: String {
         if self < .minute {
-            return String(format: "%.0fs", self)
+            return unsafe String(format: "%.0fs", self)
         } else if self < .hour {
-            return String(format: "%.0fm", self.asMinutes)
+            return unsafe String(format: "%.0fm", self.asMinutes)
         } else if self < .day {
-            return String(format: "%.1fh", self.asHours)
+            return unsafe String(format: "%.1fh", self.asHours)
         } else if self < .week {
-            return String(format: "%.1fd", self.asDays)
+            return unsafe String(format: "%.1fd", self.asDays)
         } else {
-            return String(format: "%.1fw", self.asWeeks)
+            return unsafe String(format: "%.1fw", self.asWeeks)
         }
     }
 }

@@ -1,6 +1,6 @@
 #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
 
-    import Foundation
+    public import Foundation
 
     extension Foundation.AttributedString {
         public init(_ text: String, emphasizing ranges: [Range<String.Index>]) {

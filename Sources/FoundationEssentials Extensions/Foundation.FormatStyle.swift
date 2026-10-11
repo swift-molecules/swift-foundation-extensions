@@ -1,4 +1,4 @@
-import Foundation
+public import Foundation
 
 extension FormatStyle where Self == StringDateFormat {
 
