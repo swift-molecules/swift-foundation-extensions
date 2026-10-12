@@ -28,15 +28,24 @@ extension Foundation.TimeInterval {
 
     public var formattedDuration: String {
         if self < .minute {
-            return unsafe String(format: "%.0fs", self)
+            return "\(Self.fixed(self, fractionDigits: 0))s"
         } else if self < .hour {
-            return unsafe String(format: "%.0fm", self.asMinutes)
+            return "\(Self.fixed(self.asMinutes, fractionDigits: 0))m"
         } else if self < .day {
-            return unsafe String(format: "%.1fh", self.asHours)
+            return "\(Self.fixed(self.asHours, fractionDigits: 1))h"
         } else if self < .week {
-            return unsafe String(format: "%.1fd", self.asDays)
+            return "\(Self.fixed(self.asDays, fractionDigits: 1))d"
         } else {
-            return unsafe String(format: "%.1fw", self.asWeeks)
+            return "\(Self.fixed(self.asWeeks, fractionDigits: 1))w"
         }
+    }
+
+    private static func fixed(_ value: Double, fractionDigits: Int) -> String {
+        let scale = fractionDigits == 0 ? 1.0 : 10.0
+        let scaled = (value * scale).rounded(.toNearestOrEven)
+        guard scaled.isFinite, scaled.magnitude < 1e15 else { return "\(value)" }
+        guard fractionDigits > 0 else { return "\(Int(scaled))" }
+        let tenths = Int(scaled.magnitude)
+        return "\(scaled < 0 ? "-" : "")\(tenths / 10).\(tenths % 10)"
     }
 }

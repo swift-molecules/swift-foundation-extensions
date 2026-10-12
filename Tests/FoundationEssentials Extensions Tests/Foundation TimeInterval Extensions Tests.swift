@@ -17,5 +17,8 @@ struct `Foundation TimeInterval Extensions` {
         #expect(TimeInterval(30).formattedDuration == "30s")
         #expect(TimeInterval(90).formattedDuration == "2m")
         #expect(TimeInterval.day.formattedDuration == "1.0d")
+        #expect(TimeInterval(2.5).formattedDuration == "2s")
+        #expect(TimeInterval(-30).formattedDuration == "-30s")
+        #expect((TimeInterval.hour * 1.25).formattedDuration == "1.2h")
     }
 }
