@@ -1,7 +1,6 @@
 import Foundation
-import Testing
-
 import Foundation_Extensions
+import Testing
 
 @Suite
 struct `Foundation Extensions` {
