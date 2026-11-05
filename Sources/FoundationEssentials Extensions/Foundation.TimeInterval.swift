@@ -27,13 +27,13 @@ extension Foundation.TimeInterval {
     public var asWeeks: Double { self / .week }
 
     public var formattedDuration: String {
-        if self < .minute {
+        if self.magnitude < .minute {
             return "\(Self.fixed(self, fractionDigits: 0))s"
-        } else if self < .hour {
+        } else if self.magnitude < .hour {
             return "\(Self.fixed(self.asMinutes, fractionDigits: 0))m"
-        } else if self < .day {
+        } else if self.magnitude < .day {
             return "\(Self.fixed(self.asHours, fractionDigits: 1))h"
-        } else if self < .week {
+        } else if self.magnitude < .week {
             return "\(Self.fixed(self.asDays, fractionDigits: 1))d"
         } else {
             return "\(Self.fixed(self.asWeeks, fractionDigits: 1))w"
