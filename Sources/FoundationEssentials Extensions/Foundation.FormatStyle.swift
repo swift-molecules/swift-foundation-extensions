@@ -10,6 +10,9 @@ extension FormatStyle where Self == StringDateFormat {
 public struct StringDateFormat: FormatStyle {
 
     let dateFormat: String
+}
+
+extension StringDateFormat {
 
     public func format(_ value: Date) -> String {
         let formatter = DateFormatter()
