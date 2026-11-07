@@ -12,9 +12,15 @@ let gregorian: Calendar = {
     return calendar
 }()
 
-@Suite
-struct `Foundation Date Extensions` {
+enum `Foundation Date Extensions Tests` {}
 
+extension `Foundation Date Extensions Tests` {
+    @Suite
+    struct `Foundation Date Extensions` {
+    }
+}
+
+extension `Foundation Date Extensions Tests`.`Foundation Date Extensions` {
     @Suite
     struct Creation {
 

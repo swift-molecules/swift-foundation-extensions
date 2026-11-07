@@ -2,12 +2,16 @@ import Foundation
 import Foundation_Extensions
 import Testing
 
-@Suite
-struct `Foundation Extensions` {
+enum `Foundation Extensions Tests` {}
 
-    @Test
-    func `The umbrella re-exports every type module`() {
-        #expect(DateComponents.zero == DateComponents())
-        #expect(TimeInterval.minute == 60)
+extension `Foundation Extensions Tests` {
+    @Suite
+    struct `Foundation Extensions` {
+
+        @Test
+        func `The umbrella re-exports every type module`() {
+            #expect(DateComponents.zero == DateComponents())
+            #expect(TimeInterval.minute == 60)
+        }
     }
 }
