@@ -5,9 +5,9 @@
 
     @testable import FoundationEssentials_Extensions
 
-enum `Foundation AttributedString Extensions Tests` {}
+    enum `Foundation AttributedString Extensions Tests` {}
 
-extension `Foundation AttributedString Extensions Tests` {
+    extension `Foundation AttributedString Extensions Tests` {
         @Suite
         struct `Foundation AttributedString Extensions` {
 
@@ -26,6 +26,6 @@ extension `Foundation AttributedString Extensions Tests` {
                 #expect(marked.runs.filter { $0.inlinePresentationIntent == .stronglyEmphasized }.map { String(marked[$0.range].characters) } == ["x", "y"])
             }
         }
-}
+    }
 
 #endif
