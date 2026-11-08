@@ -27,16 +27,16 @@ extension Foundation.TimeInterval {
     public var asWeeks: Double { self / .week }
 
     public var formattedDuration: String {
-        if self.magnitude < .minute {
-            return "\(Self.fixed(self, fractionDigits: 0))s"
+        return if self.magnitude < .minute {
+            "\(Self.fixed(self, fractionDigits: 0))s"
         } else if self.magnitude < .hour {
-            return "\(Self.fixed(self.asMinutes, fractionDigits: 0))m"
+            "\(Self.fixed(self.asMinutes, fractionDigits: 0))m"
         } else if self.magnitude < .day {
-            return "\(Self.fixed(self.asHours, fractionDigits: 1))h"
+            "\(Self.fixed(self.asHours, fractionDigits: 1))h"
         } else if self.magnitude < .week {
-            return "\(Self.fixed(self.asDays, fractionDigits: 1))d"
+            "\(Self.fixed(self.asDays, fractionDigits: 1))d"
         } else {
-            return "\(Self.fixed(self.asWeeks, fractionDigits: 1))w"
+            "\(Self.fixed(self.asWeeks, fractionDigits: 1))w"
         }
     }
 

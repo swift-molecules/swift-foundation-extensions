@@ -357,12 +357,12 @@ extension Date {
     public func relativeFormatted(in calendar: Calendar, now: Date = Date()) -> String {
 
         if self.isToday(in: calendar) {
-            if abs(self.timeIntervalSince(now)) < 60 {
-                return "now"
+            return if abs(self.timeIntervalSince(now)) < 60 {
+                "now"
             } else if self < now {
-                return self.timeAgoSince(now, in: calendar)
+                self.timeAgoSince(now, in: calendar)
             } else {
-                return self.timeUntil(now, in: calendar)
+                self.timeUntil(now, in: calendar)
             }
         } else if self.isYesterday(in: calendar) {
             return "yesterday"
