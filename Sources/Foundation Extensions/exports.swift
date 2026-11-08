@@ -1,2 +1,2 @@
-@_exported import FoundationEssentials_Extensions
-@_exported import FoundationInternationalization_Extensions
+@_exported public import FoundationEssentials_Extensions
+@_exported public import FoundationInternationalization_Extensions
