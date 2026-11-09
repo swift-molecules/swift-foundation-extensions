@@ -8,13 +8,14 @@ extension Foundation.Data {
 
     /// Appends `string` in `encoding`.
     ///
-    /// Throws, and appends nothing, when `encoding` cannot represent `string`.
+    /// Throws `CocoaError.fileWriteInapplicableStringEncoding`, as Foundation's own string writing does,
+    /// and appends nothing, when `encoding` cannot represent `string`.
     public mutating func append(
         _ string: String,
         encoding: String.Encoding
-    ) throws(String.Encoding.Error) {
+    ) throws(CocoaError) {
         guard let data = string.data(using: encoding) else {
-            throw String.Encoding.Error(encoding: encoding)
+            throw CocoaError(.fileWriteInapplicableStringEncoding)
         }
         self.append(data)
     }

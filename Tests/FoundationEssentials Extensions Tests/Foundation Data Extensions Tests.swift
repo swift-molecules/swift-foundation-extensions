@@ -26,9 +26,10 @@ extension `Foundation Data Extensions Tests` {
         @Test
         func `Appending a string its encoding cannot represent throws and appends nothing`() {
             var data = Data("ab".utf8)
-            #expect(throws: String.Encoding.Error(encoding: .ascii)) {
+            let error = #expect(throws: CocoaError.self) {
                 try data.append("é", encoding: .ascii)
             }
+            #expect(error?.code == .fileWriteInapplicableStringEncoding)
             #expect(data == Data("ab".utf8))
         }
     }
